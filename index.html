@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>manduqwert - Streamer de GD</title>
+    <style>
+        /* Estilo Gamer Dark */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0e14;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Menu de Navegação */
+        nav {
+            background-color: #151a26;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+        nav a {
+            color: #34d399;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #059669;
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 40px 0;
+        }
+
+        /* Seções de Conteúdo */
+        section {
+            background-color: #151a26;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 40px;
+            border-left: 5px solid #34d399;
+        }
+
+        h1 {
+            color: #34d399;
+            font-size: 2.5rem;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #60a5fa;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        /* Estilo das listas de Viewers e Fases */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            background-color: #1e293b;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 1.05rem;
+        }
+        .destaque {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+        .call {
+            color: #a78bfa;
+            font-style: italic;
+        }
+
+        /* Rodapé de Créditos */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: auto;
+            width: 100%;
+            background-color: #090d16;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu para pular direto para as seções -->
+    <nav>
+        <a href="#principal">Principal</a>
+        <a href="#fases">Fases Difíceis</a>
+        <a href="#creditos">Agradecimentos</a>
+    </nav>
+
+    <div class="container">
+
+        <!-- 1 - PÁGINA PRINCIPAL -->
+        <section id="principal">
+            <h1>manduqwert 🚀</h1>
+            <p>Bem-vindo ao site oficial do manduqwert, streamer focado em Geometry Dash!</p>
+            
+            <h2>O que ele está fazendo agora?</h2>
+            <p>Atualmente focado no modo editor, **CRIANDO** a sua própria fase chamada: <span class="destaque">Guitarra Humana</span> 🎸</p>
+
+            <h2>Comunidade & Chat</h2>
+            <p>Estes são os viewers lendários que mais marcam presença na live da Twitch:</p>
+            <ul>
+                <li>🔥 <span class="destaque">GDPlayer878</span></li>
+                <li>🔥 <span class="destaque">drangleleike</span></li>
+                <li>🔥 <span class="destaque">Santxnely</span></li>
+            </ul>
+            
+            <h2>Discord & Calls</h2>
+            <p class="call">"e tbm tem gente que faz call com ele no discord mas eu esqueci o nome das pessoas na twitch foi mal :P"</p>
+        </section>
+
+        <!-- 2 - FASES MAIS DIFÍCEIS -->
+        <section id="fases">
+            <h2>🏆 Conquistas no Geometry Dash</h2>
+            <p>O homem tem dedos de aço. Dá uma olhada nas maiores vitórias dele até agora:</p>
+            <ul>
+                <li>🔴 <strong>Hardest:</strong> Acu (Extreme Demon) - Zerado com sucesso!</li>
+                <li>⚫ <strong>Outras conquistas:</strong> The Badland (Insane Demon)</li>
+            </ul>
+        </section>
+
+        <!-- 3 - AGRADECIMENTOS E CRÉDITOS -->
+        <section id="creditos">
+            <h2>❤️ Um Obrigado Especial</h2>
+            <p>Um grande agradecimento ao <strong>manduqwert</strong> por proporcionar lives incríveis, momentos insanos de gameplay, criação de fases e por unir essa comunidade foda do GD.</p>
+        </section>
+
+    </div>
+
+    <!-- RODAPÉ COM OS SEUS CRÉDITOS -->
+    <footer>
+        Desenvolvido com orgulho por <span style="color: #34d399; font-weight: bold;">GDPlayer878 / Friendzinn</span> © 2026
+    </footer>
+
+</body>
+</html>
