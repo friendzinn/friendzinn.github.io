@@ -7,13 +7,9 @@
   <title>manduqwert - Streamer de GD</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -53,9 +49,7 @@
       transition: 0.2s;
     }
 
-    nav a:hover {
-      background: #263244;
-    }
+    nav a:hover { background: #263244; }
 
     section {
       background: #151a26;
@@ -64,17 +58,10 @@
       margin-bottom: 20px;
     }
 
-    h2 {
-      color: #60a5fa;
-    }
+    h2 { color: #60a5fa; }
+    h3 { color: #34d399; }
 
-    h3 {
-      color: #34d399;
-    }
-
-    li {
-      margin: 10px 0;
-    }
+    li { margin: 10px 0; }
 
     .music-player {
       background: #0b0e14;
@@ -88,9 +75,7 @@
       margin-top: 10px;
     }
 
-    .game-container {
-      text-align: center;
-    }
+    .game-container { text-align: center; }
 
     canvas {
       background: #080b12;
@@ -111,9 +96,7 @@
       margin-top: 12px;
     }
 
-    button:hover {
-      background: #6ee7b7;
-    }
+    button:hover { background: #6ee7b7; }
 
     footer {
       text-align: center;
@@ -135,15 +118,15 @@
     <a href="#mha">MHA</a>
     <a href="#cubedash">Cube Dash</a>
     <a href="#shipfly">Ship Fly</a>
+    <a href="#ballfly">Ball Fly</a>
+    <a href="#ballearth">Ball Earth</a>
     <a href="#agradecimentos">Agradecimentos</a>
   </nav>
 
   <section id="principal">
     <h2>Principal</h2>
 
-    <p>
-      Atualmente ele está zerando challenges e demons.
-    </p>
+    <p>Atualmente ele está zerando challenges e demons.</p>
 
     <h3>Viewers</h3>
     <ul>
@@ -185,9 +168,7 @@
   <section id="cubedash">
     <h2>Cube Dash</h2>
 
-    <p>
-      Pule os espinhos e tente conseguir a maior pontuação!
-    </p>
+    <p>Pule os espinhos e tente conseguir a maior pontuação!</p>
 
     <div class="game-container">
       <canvas id="game" width="720" height="220"></canvas>
@@ -223,6 +204,51 @@
       </p>
 
       <button onclick="restartShip()">Reiniciar Ship Fly</button>
+    </div>
+  </section>
+
+  <section id="ballfly">
+    <h2>Ball Fly</h2>
+
+    <p>
+      Inverta a gravidade para desviar dos pilares e sobreviver o máximo possível!
+    </p>
+
+    <div class="game-container">
+      <canvas id="ballGame" width="720" height="260"></canvas>
+
+      <p>Pontuação: <span id="ballScore">0</span></p>
+      <p>Recorde: <span id="ballBest">0</span></p>
+
+      <p>
+        Clique ou aperte ESPAÇO para inverter a gravidade.
+      </p>
+
+      <button onclick="restartBall()">Reiniciar Ball Fly</button>
+    </div>
+  </section>
+
+  <!-- NOVO JOGO: BALL EARTH -->
+
+  <section id="ballearth">
+    <h2>Ball Earth</h2>
+
+    <p>
+      Alterne entre o chão e o teto para desviar dos pilares!
+      Só é possível inverter a gravidade quando estiver encostando em uma superfície.
+    </p>
+
+    <div class="game-container">
+      <canvas id="earthGame" width="720" height="260"></canvas>
+
+      <p>Pontuação: <span id="earthScore">0</span></p>
+      <p>Recorde: <span id="earthBest">0</span></p>
+
+      <p>
+        Clique ou aperte ESPAÇO quando estiver no chão ou no teto para inverter a gravidade.
+      </p>
+
+      <button onclick="restartEarth()">Reiniciar Ball Earth</button>
     </div>
   </section>
 
@@ -381,9 +407,7 @@
         return;
       }
 
-      if (!started) {
-        resetGame();
-      }
+      if (!started) resetGame();
 
       if (cube.grounded) {
         cube.vy = -12;
@@ -425,9 +449,7 @@
         cube.grounded = true;
       }
 
-      if (frame % 95 === 0) {
-        createObstacle();
-      }
+      if (frame % 95 === 0) createObstacle();
 
       for (const obstacle of obstacles) {
         obstacle.x -= speed;
@@ -549,10 +571,6 @@
       }
     }
 
-    function restartGame() {
-      resetGame();
-    }
-
     // ==========================================
     // SHIP FLY
     // ==========================================
@@ -603,8 +621,8 @@
 
     function spawnShipObstacle() {
       const gapSize = Math.max(85, 115 - shipScore * 0.3);
-
       const margin = 25;
+
       const gapY = margin + Math.random() *
         (shipHeight - gapSize - margin * 2);
 
@@ -617,13 +635,8 @@
     }
 
     function startShip() {
-      if (shipGameOver) {
-        restartShip();
-      }
-
-      if (!shipStarted) {
-        resetShip();
-      }
+      if (shipGameOver) restartShip();
+      if (!shipStarted) resetShip();
 
       shipHolding = true;
     }
@@ -653,9 +666,7 @@
         shipGameOver = true;
       }
 
-      if (shipFrame % 105 === 0) {
-        spawnShipObstacle();
-      }
+      if (shipFrame % 105 === 0) spawnShipObstacle();
 
       for (const obstacle of shipObstacles) {
         obstacle.x -= shipSpeed;
@@ -673,9 +684,7 @@
           shipTop < obstacle.gapY ||
           shipBottom > obstacle.gapY + obstacle.gapSize;
 
-        if (overlapsX && outsideGap) {
-          shipGameOver = true;
-        }
+        if (overlapsX && outsideGap) shipGameOver = true;
 
         if (
           !obstacle.counted &&
@@ -703,6 +712,7 @@
     function drawShip() {
       shipCtx.clearRect(0, 0, shipWidth, shipHeight);
 
+      // Obstáculos
       for (const obstacle of shipObstacles) {
         shipCtx.fillStyle = "#ef4444";
 
@@ -721,17 +731,40 @@
         );
       }
 
+      // NOVO DESENHO DA SHIP
       shipCtx.save();
       shipCtx.translate(ship.x, ship.y);
 
+      // Corpo principal da nave
       shipCtx.fillStyle = "#38bdf8";
+      shipCtx.strokeStyle = "#e0f2fe";
+      shipCtx.lineWidth = 2;
+
       shipCtx.beginPath();
-      shipCtx.moveTo(15, 0);
-      shipCtx.lineTo(-12, -10);
-      shipCtx.lineTo(-7, 0);
-      shipCtx.lineTo(-12, 10);
+      shipCtx.moveTo(19, 0);
+      shipCtx.lineTo(5, -7);
+      shipCtx.lineTo(-9, -7);
+      shipCtx.lineTo(-15, -12);
+      shipCtx.lineTo(-12, -2);
+      shipCtx.lineTo(-12, 2);
+      shipCtx.lineTo(-15, 12);
+      shipCtx.lineTo(-9, 7);
+      shipCtx.lineTo(5, 7);
       shipCtx.closePath();
+
       shipCtx.fill();
+      shipCtx.stroke();
+
+      // Cabine da nave
+      shipCtx.fillStyle = "#0b0e14";
+      shipCtx.beginPath();
+      shipCtx.ellipse(3, 0, 5, 3, 0, 0, Math.PI * 2);
+      shipCtx.fill();
+
+      // Detalhe da cabine
+      shipCtx.strokeStyle = "#bae6fd";
+      shipCtx.lineWidth = 1;
+      shipCtx.stroke();
 
       shipCtx.restore();
 
@@ -760,7 +793,452 @@
     }
 
     // ==========================================
-    // CONTROLES DOS DOIS JOGOS
+    // BALL FLY
+    // ==========================================
+
+    const ballCanvas = document.getElementById("ballGame");
+    const ballCtx = ballCanvas.getContext("2d");
+
+    const ballScoreText = document.getElementById("ballScore");
+    const ballBestText = document.getElementById("ballBest");
+
+    const ballWidth = ballCanvas.width;
+    const ballHeight = ballCanvas.height;
+
+    let ball;
+    let ballObstacles;
+    let ballScore = 0;
+    let ballBest = Number(localStorage.getItem("ballFlyBest")) || 0;
+    let ballSpeed;
+    let ballFrame;
+    let ballGameOver;
+    let ballStarted;
+
+    ballBestText.textContent = ballBest;
+
+    function resetBall() {
+      ball = {
+        x: 110,
+        y: ballHeight / 2,
+        radius: 11,
+        vy: 0,
+        gravity: 1
+      };
+
+      ballObstacles = [];
+      ballScore = 0;
+      ballSpeed = 4;
+      ballFrame = 0;
+      ballGameOver = false;
+      ballStarted = true;
+
+      ballScoreText.textContent = ballScore;
+    }
+
+    function restartBall() {
+      resetBall();
+    }
+
+    function toggleBallGravity() {
+      if (ballGameOver) {
+        restartBall();
+        return;
+      }
+
+      if (!ballStarted) resetBall();
+
+      ball.gravity *= -1;
+      ball.vy = ball.gravity * 2;
+    }
+
+    function spawnBallObstacle() {
+      const fromTop = Math.random() < 0.5;
+      const height = 65 + Math.random() * 65;
+
+      ballObstacles.push({
+        x: ballWidth + 20,
+        y: fromTop ? 0 : ballHeight - height,
+        width: 32,
+        height: height,
+        counted: false
+      });
+    }
+
+    function updateBall() {
+      if (!ballStarted || ballGameOver) return;
+
+      ballFrame++;
+
+      ball.vy += ball.gravity * 0.28;
+      ball.vy = Math.max(-6, Math.min(6, ball.vy));
+      ball.y += ball.vy;
+
+      if (
+        ball.y - ball.radius < 0 ||
+        ball.y + ball.radius > ballHeight
+      ) {
+        ballGameOver = true;
+      }
+
+      if (ballFrame % 95 === 0) {
+        spawnBallObstacle();
+      }
+
+      for (const obstacle of ballObstacles) {
+        obstacle.x -= ballSpeed;
+
+        const closestX = Math.max(
+          obstacle.x,
+          Math.min(ball.x, obstacle.x + obstacle.width)
+        );
+
+        const closestY = Math.max(
+          obstacle.y,
+          Math.min(ball.y, obstacle.y + obstacle.height)
+        );
+
+        const dx = ball.x - closestX;
+        const dy = ball.y - closestY;
+
+        if (
+          dx * dx + dy * dy <
+          ball.radius * ball.radius
+        ) {
+          ballGameOver = true;
+        }
+
+        if (
+          !obstacle.counted &&
+          obstacle.x + obstacle.width < ball.x
+        ) {
+          obstacle.counted = true;
+          ballScore++;
+          ballScoreText.textContent = ballScore;
+
+          if (ballScore > ballBest) {
+            ballBest = ballScore;
+            localStorage.setItem("ballFlyBest", ballBest);
+            ballBestText.textContent = ballBest;
+          }
+
+          ballSpeed = Math.min(7, ballSpeed + 0.06);
+        }
+      }
+
+      ballObstacles = ballObstacles.filter(
+        obstacle => obstacle.x > -50
+      );
+    }
+
+    function drawBall() {
+      ballCtx.clearRect(0, 0, ballWidth, ballHeight);
+
+      for (const obstacle of ballObstacles) {
+        ballCtx.fillStyle = "#ef4444";
+        ballCtx.fillRect(
+          obstacle.x,
+          obstacle.y,
+          obstacle.width,
+          obstacle.height
+        );
+      }
+
+      ballCtx.fillStyle = "#34d399";
+      ballCtx.fillRect(0, 0, ballWidth, 2);
+      ballCtx.fillRect(0, ballHeight - 2, ballWidth, 2);
+
+      ballCtx.beginPath();
+      ballCtx.arc(
+        ball.x,
+        ball.y,
+        ball.radius,
+        0,
+        Math.PI * 2
+      );
+
+      ballCtx.fillStyle = "#38bdf8";
+      ballCtx.fill();
+
+      ballCtx.lineWidth = 2;
+      ballCtx.strokeStyle = "#e0f2fe";
+      ballCtx.stroke();
+
+      ballCtx.fillStyle = "#e5e7eb";
+      ballCtx.font = "14px Arial";
+      ballCtx.fillText(
+        ball.gravity === 1 ? "GRAVIDADE: ↓" : "GRAVIDADE: ↑",
+        12,
+        22
+      );
+
+      if (!ballStarted) {
+        ballCtx.fillStyle = "white";
+        ballCtx.font = "20px Arial";
+        ballCtx.fillText(
+          "Clique ou aperte ESPAÇO para começar!",
+          155,
+          130
+        );
+      }
+
+      if (ballGameOver) {
+        ballCtx.fillStyle = "white";
+        ballCtx.font = "30px Arial";
+        ballCtx.fillText("GAME OVER", 275, 110);
+
+        ballCtx.font = "16px Arial";
+        ballCtx.fillText(
+          "Clique ou aperte ESPAÇO para tentar novamente",
+          165,
+          140
+        );
+      }
+    }
+
+    // ==========================================
+    // BALL EARTH
+    // ==========================================
+
+    const earthCanvas = document.getElementById("earthGame");
+    const earthCtx = earthCanvas.getContext("2d");
+
+    const earthScoreText = document.getElementById("earthScore");
+    const earthBestText = document.getElementById("earthBest");
+
+    const earthWidth = earthCanvas.width;
+    const earthHeight = earthCanvas.height;
+
+    let earthBall;
+    let earthObstacles;
+    let earthScore = 0;
+    let earthBest = Number(localStorage.getItem("ballEarthBest")) || 0;
+    let earthSpeed;
+    let earthFrame;
+    let earthGameOver;
+    let earthStarted;
+
+    earthBestText.textContent = earthBest;
+
+    function resetEarth() {
+      earthBall = {
+        x: 110,
+        y: earthHeight - 12,
+        radius: 11,
+        vy: 0,
+        gravity: 1,
+        grounded: true
+      };
+
+      earthObstacles = [];
+      earthScore = 0;
+      earthSpeed = 4;
+      earthFrame = 0;
+      earthGameOver = false;
+      earthStarted = true;
+
+      earthScoreText.textContent = earthScore;
+    }
+
+    function restartEarth() {
+      resetEarth();
+    }
+
+    function toggleEarthGravity() {
+      if (earthGameOver) {
+        restartEarth();
+        return;
+      }
+
+      if (!earthStarted) resetEarth();
+
+      // Só pode trocar a gravidade quando estiver no chão ou no teto.
+      if (!earthBall.grounded) return;
+
+      earthBall.gravity *= -1;
+      earthBall.vy = earthBall.gravity * 2;
+      earthBall.grounded = false;
+    }
+
+    function spawnEarthObstacle() {
+      const fromTop = Math.random() < 0.5;
+      const height = 75 + Math.random() * 55;
+
+      earthObstacles.push({
+        x: earthWidth + 20,
+        y: fromTop ? 0 : earthHeight - height,
+        width: 38,
+        height: height,
+        counted: false
+      });
+    }
+
+    function updateEarth() {
+      if (!earthStarted || earthGameOver) return;
+
+      earthFrame++;
+
+      earthBall.vy += earthBall.gravity * 0.32;
+      earthBall.vy = Math.max(-6, Math.min(6, earthBall.vy));
+      earthBall.y += earthBall.vy;
+
+      // O chão e o teto não matam: apenas permitem inverter a gravidade.
+      if (earthBall.y >= earthHeight - earthBall.radius) {
+        earthBall.y = earthHeight - earthBall.radius;
+        earthBall.vy = 0;
+        earthBall.grounded = true;
+      } else if (earthBall.y <= earthBall.radius) {
+        earthBall.y = earthBall.radius;
+        earthBall.vy = 0;
+        earthBall.grounded = true;
+      }
+
+      if (earthFrame % 100 === 0) {
+        spawnEarthObstacle();
+      }
+
+      for (const obstacle of earthObstacles) {
+        obstacle.x -= earthSpeed;
+
+        const closestX = Math.max(
+          obstacle.x,
+          Math.min(
+            earthBall.x,
+            obstacle.x + obstacle.width
+          )
+        );
+
+        const closestY = Math.max(
+          obstacle.y,
+          Math.min(
+            earthBall.y,
+            obstacle.y + obstacle.height
+          )
+        );
+
+        const dx = earthBall.x - closestX;
+        const dy = earthBall.y - closestY;
+
+        // A única colisão fatal é com os pilares.
+        if (
+          dx * dx + dy * dy <
+          earthBall.radius * earthBall.radius
+        ) {
+          earthGameOver = true;
+        }
+
+        if (
+          !obstacle.counted &&
+          obstacle.x + obstacle.width < earthBall.x
+        ) {
+          obstacle.counted = true;
+          earthScore++;
+          earthScoreText.textContent = earthScore;
+
+          if (earthScore > earthBest) {
+            earthBest = earthScore;
+            localStorage.setItem("ballEarthBest", earthBest);
+            earthBestText.textContent = earthBest;
+          }
+
+          earthSpeed = Math.min(7, earthSpeed + 0.06);
+        }
+      }
+
+      earthObstacles = earthObstacles.filter(
+        obstacle => obstacle.x > -50
+      );
+    }
+
+    function drawEarth() {
+      earthCtx.clearRect(0, 0, earthWidth, earthHeight);
+
+      // Pilares
+      for (const obstacle of earthObstacles) {
+        earthCtx.fillStyle = "#ef4444";
+        earthCtx.fillRect(
+          obstacle.x,
+          obstacle.y,
+          obstacle.width,
+          obstacle.height
+        );
+      }
+
+      // Chão e teto
+      earthCtx.fillStyle = "#34d399";
+      earthCtx.fillRect(0, 0, earthWidth, 3);
+      earthCtx.fillRect(0, earthHeight - 3, earthWidth, 3);
+
+      // Bola
+      earthCtx.beginPath();
+      earthCtx.arc(
+        earthBall.x,
+        earthBall.y,
+        earthBall.radius,
+        0,
+        Math.PI * 2
+      );
+
+      earthCtx.fillStyle = "#38bdf8";
+      earthCtx.fill();
+
+      earthCtx.lineWidth = 2;
+      earthCtx.strokeStyle = "#e0f2fe";
+      earthCtx.stroke();
+
+      // Olhos
+      earthCtx.fillStyle = "#0b0e14";
+      earthCtx.beginPath();
+      earthCtx.arc(
+        earthBall.x - 4,
+        earthBall.y - 2,
+        2,
+        0,
+        Math.PI * 2
+      );
+      earthCtx.arc(
+        earthBall.x + 4,
+        earthBall.y - 2,
+        2,
+        0,
+        Math.PI * 2
+      );
+      earthCtx.fill();
+
+      // Indicador de gravidade
+      earthCtx.fillStyle = "white";
+      earthCtx.font = "14px Arial";
+      earthCtx.fillText(
+        earthBall.gravity === 1 ? "GRAVIDADE: ↓" : "GRAVIDADE: ↑",
+        12,
+        22
+      );
+
+      if (!earthStarted) {
+        earthCtx.fillStyle = "white";
+        earthCtx.font = "20px Arial";
+        earthCtx.fillText(
+          "Clique ou aperte ESPAÇO para começar!",
+          155,
+          130
+        );
+      }
+
+      if (earthGameOver) {
+        earthCtx.fillStyle = "white";
+        earthCtx.font = "30px Arial";
+        earthCtx.fillText("GAME OVER", 275, 110);
+
+        earthCtx.font = "16px Arial";
+        earthCtx.fillText(
+          "Clique ou aperte ESPAÇO para tentar novamente",
+          165,
+          140
+        );
+      }
+    }
+
+    // ==========================================
+    // CONTROLES DOS JOGOS
     // ==========================================
 
     let activeGame = "cube";
@@ -773,6 +1251,16 @@
     shipCanvas.addEventListener("pointerdown", () => {
       activeGame = "ship";
       startShip();
+    });
+
+    ballCanvas.addEventListener("pointerdown", () => {
+      activeGame = "ball";
+      toggleBallGravity();
+    });
+
+    earthCanvas.addEventListener("pointerdown", () => {
+      activeGame = "earth";
+      toggleEarthGravity();
     });
 
     window.addEventListener("pointerup", stopShip);
@@ -789,6 +1277,10 @@
 
         if (activeGame === "ship") {
           startShip();
+        } else if (activeGame === "ball") {
+          toggleBallGravity();
+        } else if (activeGame === "earth") {
+          toggleEarthGravity();
         } else {
           jump();
         }
@@ -815,6 +1307,12 @@
       updateShip();
       drawShip();
 
+      updateBall();
+      drawBall();
+
+      updateEarth();
+      drawEarth();
+
       requestAnimationFrame(gameLoop);
     }
 
@@ -823,6 +1321,12 @@
 
     resetShip();
     shipStarted = false;
+
+    resetBall();
+    ballStarted = false;
+
+    resetEarth();
+    earthStarted = false;
 
     gameLoop();
   </script>
