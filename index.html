@@ -303,14 +303,14 @@
     const currentMusic = document.getElementById("currentMusic");
 
     const playlist = [
-  { name: "Nuke Powder", file: "NukePowder.mp3" },
-  { name: "Sonic Blaster", file: "574484_F-777---Sonic-Blaster.mp3" },
-  { name: "Final Battle", file: "598349_-Final-Battle-.mp3" },
-  { name: "DarkDragonFire", file: "DarkDragonFire.mp3" },
-  { name: "GodEaterInstrumental", file: "GodEaterInstrumental.mp3" },
-  { name: "SpeedOfLight", file: "SpeedOfLight.mp3" },
-  { name: "Stalemate", file: "Stalemate.mp3" }
-];
+      { name: "Nuke Powder", file: "NukePowder.mp3" },
+      { name: "Sonic Blaster", file: "574484_F-777---Sonic-Blaster.mp3" },
+      { name: "Final Battle", file: "598349_-Final-Battle-.mp3" },
+      { name: "DarkDragonFire", file: "DarkDragonFire.mp3" },
+      { name: "GodEaterInstrumental", file: "GodEaterInstrumental.mp3" },
+      { name: "SpeedOfLight", file: "SpeedOfLight.mp3" },
+      { name: "Stalemate", file: "Stalemate.mp3" }
+    ];
 
     let lastMusic = -1;
 
@@ -1345,8 +1345,14 @@
 
       waveFrame++;
 
-      // Movimento diagonal da Wave
-      wave.y += waveHolding ? -4.5 : 4.5;
+      // Movimento diagonal: normal a 45 graus e mini a 15 graus.
+      const waveVerticalSpeed = waveMini
+        ? waveSpeed * Math.tan(Math.PI / 12)
+        : 4.5;
+
+      wave.y += waveHolding
+        ? -waveVerticalSpeed
+        : waveVerticalSpeed;
 
       // Colisão com teto e chão
       if (
