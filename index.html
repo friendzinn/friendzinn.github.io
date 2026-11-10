@@ -97,6 +97,7 @@
       border: 2px solid #34d399;
       border-radius: 8px;
       max-width: 100%;
+      touch-action: none;
     }
 
     button {
@@ -133,6 +134,7 @@
     <a href="#principal">Principal</a>
     <a href="#mha">MHA</a>
     <a href="#cubedash">Cube Dash</a>
+    <a href="#shipfly">Ship Fly</a>
     <a href="#agradecimentos">Agradecimentos</a>
   </nav>
 
@@ -154,20 +156,23 @@
     </ul>
 
     <div class="music-player">
-      <h3>🎵 Música do site: Nuke Powder</h3>
-      <p>Trilha sonora oficial do site!</p>
+      <h3>🎵 Playlist do site</h3>
+      <p id="currentMusic">Carregando música...</p>
 
-      <audio controls loop>
-        <source src="NukePowder.mp3" type="audio/mpeg">
+      <audio id="siteMusic" controls autoplay>
         Seu navegador não suporta áudio.
       </audio>
+
+      <p id="musicStatus">Tentando iniciar a música...</p>
     </div>
   </section>
 
   <section id="mha">
     <h2>MHA — Mandu's Hardest Achievements</h2>
 
-    <p>As maiores conquistas do manduqwert, organizadas da mais difícil para a mais fácil:</p>
+    <p>
+      As maiores conquistas do manduqwert, organizadas da mais difícil para a mais fácil:
+    </p>
 
     <ol>
       <li>🥇 <strong>TOP 1 — Acu:</strong> 100%</li>
@@ -199,6 +204,28 @@
     </div>
   </section>
 
+  <section id="shipfly">
+    <h2>Ship Fly</h2>
+
+    <p>
+      Faça straight fly com a ship e tente sobreviver o máximo possível!
+    </p>
+
+    <div class="game-container">
+      <canvas id="shipGame" width="720" height="260"></canvas>
+
+      <p>Distância: <span id="shipScore">0</span></p>
+      <p>Recorde: <span id="shipBest">0</span></p>
+
+      <p>
+        Segure ESPAÇO ou clique para subir.
+        Solte para descer.
+      </p>
+
+      <button onclick="restartShip()">Reiniciar Ship Fly</button>
+    </div>
+  </section>
+
   <section id="agradecimentos">
     <h2>Agradecimentos</h2>
 
@@ -212,6 +239,85 @@
   </footer>
 
   <script>
+    // ==========================================
+    // PLAYLIST ALEATÓRIA
+    // ==========================================
+
+    const siteMusic = document.getElementById("siteMusic");
+    const musicStatus = document.getElementById("musicStatus");
+    const currentMusic = document.getElementById("currentMusic");
+
+    const playlist = [
+      {
+        name: "Nuke Powder",
+        file: "NukePowder.mp3"
+      },
+      {
+        name: "Sonic Blaster",
+        file: "574484_F-777---Sonic-Blaster.mp3"
+      },
+      {
+        name: "Final Battle",
+        file: "598349_-Final-Battle-.mp3"
+      }
+    ];
+
+    let lastMusic = -1;
+
+    siteMusic.volume = 0.1;
+
+    function playRandomMusic() {
+      let nextMusic;
+
+      if (playlist.length === 1) {
+        nextMusic = 0;
+      } else {
+        do {
+          nextMusic = Math.floor(Math.random() * playlist.length);
+        } while (nextMusic === lastMusic);
+      }
+
+      lastMusic = nextMusic;
+
+      const selectedMusic = playlist[nextMusic];
+
+      siteMusic.src = selectedMusic.file;
+      siteMusic.volume = 0.1;
+
+      currentMusic.textContent =
+        "Tocando agora: " + selectedMusic.name;
+
+      musicStatus.textContent = "Carregando música...";
+
+      siteMusic.play()
+        .then(() => {
+          musicStatus.textContent = "🎵 Música tocando!";
+        })
+        .catch(() => {
+          musicStatus.textContent =
+            "O navegador bloqueou o autoplay. Aperte Play!";
+        });
+    }
+
+    siteMusic.addEventListener("ended", () => {
+      playRandomMusic();
+    });
+
+    siteMusic.addEventListener("play", () => {
+      musicStatus.textContent = "🎵 Música tocando!";
+    });
+
+    siteMusic.addEventListener("error", () => {
+      musicStatus.textContent =
+        "Não foi possível carregar essa música. Verifique o arquivo.";
+    });
+
+    playRandomMusic();
+
+    // ==========================================
+    // CUBE DASH
+    // ==========================================
+
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
 
@@ -305,16 +411,7 @@
       resetGame();
     }
 
-    document.addEventListener("keydown", (event) => {
-      if (event.code === "Space" || event.code === "ArrowUp") {
-        event.preventDefault();
-        jump();
-      }
-    });
-
-    canvas.addEventListener("pointerdown", jump);
-
-    function update() {
+    function updateCube() {
       if (!started || gameOver) return;
 
       frame++;
@@ -358,7 +455,10 @@
           }
         }
 
-        if (!obstacle.counted && obstacle.x + obstacle.spikes * 24 < cube.x) {
+        if (
+          !obstacle.counted &&
+          obstacle.x + obstacle.spikes * 24 < cube.x
+        ) {
           obstacle.counted = true;
           score++;
           scoreText.textContent = score;
@@ -376,22 +476,19 @@
       obstacles = obstacles.filter(o => o.x > -150);
     }
 
-    function draw() {
+    function drawCube() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       ctx.fillStyle = "#34d399";
       ctx.fillRect(0, ground, canvas.width, 3);
 
-      // Cube
       ctx.fillStyle = "#facc15";
       ctx.fillRect(cube.x, cube.y, cube.size, cube.size);
 
-      // Olhos do cubo
       ctx.fillStyle = "#111827";
       ctx.fillRect(cube.x + 7, cube.y + 8, 5, 5);
       ctx.fillRect(cube.x + 19, cube.y + 8, 5, 5);
 
-      // Obstáculos
       for (const obstacle of obstacles) {
         for (let i = 0; i < obstacle.spikes; i++) {
           const x = obstacle.x + i * 24;
@@ -406,13 +503,24 @@
 
         if (obstacle.special === "pad") {
           ctx.fillStyle = "#facc15";
-          ctx.fillRect(obstacle.x + obstacle.spikes * 24, ground - 7, 24, 7);
+          ctx.fillRect(
+            obstacle.x + obstacle.spikes * 24,
+            ground - 7,
+            24,
+            7
+          );
         }
 
         if (obstacle.special === "orb" && !obstacle.specialUsed) {
           ctx.beginPath();
           ctx.fillStyle = "#38bdf8";
-          ctx.arc(obstacle.x + obstacle.spikes * 24 + 10, ground - 75, 10, 0, Math.PI * 2);
+          ctx.arc(
+            obstacle.x + obstacle.spikes * 24 + 10,
+            ground - 75,
+            10,
+            0,
+            Math.PI * 2
+          );
           ctx.fill();
         }
       }
@@ -420,7 +528,11 @@
       if (!started) {
         ctx.fillStyle = "white";
         ctx.font = "20px Arial";
-        ctx.fillText("Clique ou aperte ESPAÇO para começar!", 155, 100);
+        ctx.fillText(
+          "Clique ou aperte ESPAÇO para começar!",
+          155,
+          100
+        );
       }
 
       if (gameOver) {
@@ -429,20 +541,290 @@
         ctx.fillText("GAME OVER", 275, 90);
 
         ctx.font = "16px Arial";
-        ctx.fillText("Clique ou aperte ESPAÇO para reiniciar", 210, 120);
+        ctx.fillText(
+          "Clique ou aperte ESPAÇO para reiniciar",
+          210,
+          120
+        );
       }
     }
 
-    function loop() {
-      update();
-      draw();
-      requestAnimationFrame(loop);
+    function restartGame() {
+      resetGame();
     }
 
-    started = false;
+    // ==========================================
+    // SHIP FLY
+    // ==========================================
+
+    const shipCanvas = document.getElementById("shipGame");
+    const shipCtx = shipCanvas.getContext("2d");
+
+    const shipScoreText = document.getElementById("shipScore");
+    const shipBestText = document.getElementById("shipBest");
+
+    const shipWidth = shipCanvas.width;
+    const shipHeight = shipCanvas.height;
+
+    let ship;
+    let shipObstacles;
+    let shipScore = 0;
+    let shipBest = Number(localStorage.getItem("shipFlyBest")) || 0;
+    let shipSpeed;
+    let shipFrame;
+    let shipGameOver;
+    let shipStarted;
+    let shipHolding = false;
+
+    shipBestText.textContent = shipBest;
+
+    function resetShip() {
+      ship = {
+        x: 100,
+        y: 130,
+        vy: 0,
+        size: 18
+      };
+
+      shipObstacles = [];
+      shipScore = 0;
+      shipSpeed = 4;
+      shipFrame = 0;
+      shipGameOver = false;
+      shipStarted = true;
+      shipHolding = false;
+
+      shipScoreText.textContent = shipScore;
+    }
+
+    function restartShip() {
+      resetShip();
+    }
+
+    function spawnShipObstacle() {
+      const gapSize = Math.max(85, 115 - shipScore * 0.3);
+
+      const margin = 25;
+      const gapY = margin + Math.random() *
+        (shipHeight - gapSize - margin * 2);
+
+      shipObstacles.push({
+        x: shipWidth + 20,
+        gapY: gapY,
+        gapSize: gapSize,
+        counted: false
+      });
+    }
+
+    function startShip() {
+      if (shipGameOver) {
+        restartShip();
+      }
+
+      if (!shipStarted) {
+        resetShip();
+      }
+
+      shipHolding = true;
+    }
+
+    function stopShip() {
+      shipHolding = false;
+    }
+
+    function updateShip() {
+      if (!shipStarted || shipGameOver) return;
+
+      shipFrame++;
+
+      if (shipHolding) {
+        ship.vy -= 0.45;
+      } else {
+        ship.vy += 0.45;
+      }
+
+      ship.vy = Math.max(-5.5, Math.min(5.5, ship.vy));
+      ship.y += ship.vy;
+
+      if (
+        ship.y - ship.size / 2 < 0 ||
+        ship.y + ship.size / 2 > shipHeight
+      ) {
+        shipGameOver = true;
+      }
+
+      if (shipFrame % 105 === 0) {
+        spawnShipObstacle();
+      }
+
+      for (const obstacle of shipObstacles) {
+        obstacle.x -= shipSpeed;
+
+        const shipLeft = ship.x - ship.size / 2;
+        const shipRight = ship.x + ship.size / 2;
+        const shipTop = ship.y - ship.size / 2;
+        const shipBottom = ship.y + ship.size / 2;
+
+        const overlapsX =
+          shipRight > obstacle.x &&
+          shipLeft < obstacle.x + 35;
+
+        const outsideGap =
+          shipTop < obstacle.gapY ||
+          shipBottom > obstacle.gapY + obstacle.gapSize;
+
+        if (overlapsX && outsideGap) {
+          shipGameOver = true;
+        }
+
+        if (
+          !obstacle.counted &&
+          obstacle.x + 35 < ship.x
+        ) {
+          obstacle.counted = true;
+          shipScore++;
+          shipScoreText.textContent = shipScore;
+
+          if (shipScore > shipBest) {
+            shipBest = shipScore;
+            localStorage.setItem("shipFlyBest", shipBest);
+            shipBestText.textContent = shipBest;
+          }
+
+          shipSpeed = Math.min(7, shipSpeed + 0.06);
+        }
+      }
+
+      shipObstacles = shipObstacles.filter(
+        obstacle => obstacle.x > -60
+      );
+    }
+
+    function drawShip() {
+      shipCtx.clearRect(0, 0, shipWidth, shipHeight);
+
+      for (const obstacle of shipObstacles) {
+        shipCtx.fillStyle = "#ef4444";
+
+        shipCtx.fillRect(
+          obstacle.x,
+          0,
+          35,
+          obstacle.gapY
+        );
+
+        shipCtx.fillRect(
+          obstacle.x,
+          obstacle.gapY + obstacle.gapSize,
+          35,
+          shipHeight - obstacle.gapY - obstacle.gapSize
+        );
+      }
+
+      shipCtx.save();
+      shipCtx.translate(ship.x, ship.y);
+
+      shipCtx.fillStyle = "#38bdf8";
+      shipCtx.beginPath();
+      shipCtx.moveTo(15, 0);
+      shipCtx.lineTo(-12, -10);
+      shipCtx.lineTo(-7, 0);
+      shipCtx.lineTo(-12, 10);
+      shipCtx.closePath();
+      shipCtx.fill();
+
+      shipCtx.restore();
+
+      if (!shipStarted) {
+        shipCtx.fillStyle = "white";
+        shipCtx.font = "20px Arial";
+        shipCtx.fillText(
+          "Clique ou segure ESPAÇO para começar!",
+          145,
+          130
+        );
+      }
+
+      if (shipGameOver) {
+        shipCtx.fillStyle = "white";
+        shipCtx.font = "30px Arial";
+        shipCtx.fillText("CRASH!", 305, 110);
+
+        shipCtx.font = "16px Arial";
+        shipCtx.fillText(
+          "Clique ou aperte ESPAÇO para tentar novamente",
+          165,
+          145
+        );
+      }
+    }
+
+    // ==========================================
+    // CONTROLES DOS DOIS JOGOS
+    // ==========================================
+
+    let activeGame = "cube";
+
+    canvas.addEventListener("pointerdown", () => {
+      activeGame = "cube";
+      jump();
+    });
+
+    shipCanvas.addEventListener("pointerdown", () => {
+      activeGame = "ship";
+      startShip();
+    });
+
+    window.addEventListener("pointerup", stopShip);
+    window.addEventListener("pointercancel", stopShip);
+
+    document.addEventListener("keydown", event => {
+      if (
+        event.code === "Space" ||
+        event.code === "ArrowUp"
+      ) {
+        event.preventDefault();
+
+        if (event.repeat) return;
+
+        if (activeGame === "ship") {
+          startShip();
+        } else {
+          jump();
+        }
+      }
+    });
+
+    document.addEventListener("keyup", event => {
+      if (
+        event.code === "Space" ||
+        event.code === "ArrowUp"
+      ) {
+        stopShip();
+      }
+    });
+
+    // ==========================================
+    // LOOP PRINCIPAL
+    // ==========================================
+
+    function gameLoop() {
+      updateCube();
+      drawCube();
+
+      updateShip();
+      drawShip();
+
+      requestAnimationFrame(gameLoop);
+    }
+
     resetGame();
     started = false;
-    loop();
+
+    resetShip();
+    shipStarted = false;
+
+    gameLoop();
   </script>
 
 </body>
