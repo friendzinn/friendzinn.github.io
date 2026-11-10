@@ -30,6 +30,8 @@
             top: 0;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         nav a {
             color: #34d399;
@@ -99,6 +101,47 @@
             font-style: italic;
         }
 
+        /* Cube Dash */
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            max-width: 720px;
+            height: auto;
+            background: #0b0e14;
+            border: 2px solid #34d399;
+            border-radius: 8px;
+            margin: 20px auto;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            color: #34d399;
+            font-weight: bold;
+        }
+
+        .game-button {
+            display: block;
+            margin: 15px auto 0;
+            padding: 12px 25px;
+            background: #34d399;
+            color: #0b0e14;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .game-button:hover {
+            background: #059669;
+        }
+
         /* Rodapé de Créditos */
         footer {
             text-align: center;
@@ -117,6 +160,7 @@
     <nav>
         <a href="#principal">Principal</a>
         <a href="#fases">Fases Difíceis</a>
+        <a href="#cubedash">Cube Dash</a>
         <a href="#creditos">Agradecimentos</a>
     </nav>
 
@@ -128,7 +172,7 @@
             <p>Bem-vindo ao site oficial do manduqwert, streamer focado em Geometry Dash!</p>
             
             <h2>O que ele está fazendo agora?</h2>
-            <p>Atualmente focado no modo editor, <strong>CRIANDO</strong> a sua própria fase chamada: <span class="destaque">Guitarra Humana</span> 🎸</p>
+            <p>Atualmente ele está zerando challenges e demons.</p>
 
             <h2>Comunidade & Chat</h2>
             <p>Estes são os viewers lendários que mais marcam presença na live da Twitch:</p>
@@ -138,6 +182,7 @@
                 <li>🔥 <span class="destaque">Santxnely</span></li>
                 <li>🔥 <span class="destaque">sxftcloud</span></li>
                 <li>🔥 <span class="destaque">lovely_gd</span></li>
+                <li>🔥 <span class="destaque">LyonUnaware</span></li>
             </ul>
             
             <h2>Discord & Calls</h2>
@@ -154,7 +199,28 @@
             </ul>
         </section>
 
-        <!-- 3 - AGRADECIMENTOS E CRÉDITOS -->
+        <!-- 3 - CUBE DASH -->
+        <section id="cubedash">
+            <h2>🎮 Cube Dash</h2>
+            <p>Um pequeno desafio inspirado em Geometry Dash! Pule os espinhos e tente conseguir a maior pontuação possível.</p>
+
+            <div class="game-info">
+                <span>Pontos: <span id="score">0</span></span>
+                <span>Recorde: <span id="record">0</span></span>
+            </div>
+
+            <canvas id="gameCanvas" width="720" height="220"></canvas>
+
+            <p id="gameMessage" style="text-align:center;">
+                Clique no jogo ou aperte ESPAÇO para começar!
+            </p>
+
+            <button class="game-button" id="restartButton">
+                Jogar / Recomeçar
+            </button>
+        </section>
+
+        <!-- 4 - AGRADECIMENTOS E CRÉDITOS -->
         <section id="creditos">
             <h2>❤️ Um Obrigado Especial</h2>
             <p>Um grande agradecimento ao <strong>manduqwert</strong> por proporcionar lives incríveis, momentos insanos de gameplay, criação de fases e por unir essa comunidade foda do GD.</p>
@@ -166,6 +232,256 @@
     <footer>
         Desenvolvido com orgulho por <span style="color: #34d399; font-weight: bold;">GDPlayer878 / Friendzinn</span> © 2026
     </footer>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const scoreElement = document.getElementById("score");
+        const recordElement = document.getElementById("record");
+        const message = document.getElementById("gameMessage");
+        const restartButton = document.getElementById("restartButton");
+
+        const ground = 185;
+
+        let player;
+        let obstacles;
+        let score;
+        let speed;
+        let running = false;
+        let gameOver = false;
+        let animationId;
+        let lastTime = 0;
+        let spawnTimer = 0;
+        let record = Number(localStorage.getItem("cubeDashRecord")) || 0;
+
+        recordElement.textContent = record;
+
+        function resetGame() {
+            cancelAnimationFrame(animationId);
+
+            player = {
+                x: 85,
+                y: ground - 30,
+                size: 30,
+                velocityY: 0,
+                jumping: false
+            };
+
+            obstacles = [];
+            score = 0;
+            speed = 5;
+            spawnTimer = 0;
+            running = true;
+            gameOver = false;
+            lastTime = 0;
+
+            scoreElement.textContent = "0";
+            message.textContent = "Boa sorte! :D";
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function jump() {
+            if (!running) {
+                if (gameOver) {
+                    resetGame();
+                    return;
+                }
+
+                resetGame();
+                return;
+            }
+
+            if (!player.jumping) {
+                player.velocityY = -12;
+                player.jumping = true;
+            }
+        }
+
+        function createObstacle() {
+            obstacles.push({
+                x: canvas.width,
+                width: 28,
+                height: 32
+            });
+        }
+
+        function drawGround() {
+            ctx.fillStyle = "#34d399";
+            ctx.fillRect(0, ground, canvas.width, 3);
+
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 1;
+
+            for (let x = 0; x < canvas.width; x += 30) {
+                ctx.beginPath();
+                ctx.moveTo(x, ground + 3);
+                ctx.lineTo(x - 15, canvas.height);
+                ctx.stroke();
+            }
+        }
+
+        function drawPlayer() {
+            ctx.save();
+            ctx.translate(
+                player.x + player.size / 2,
+                player.y + player.size / 2
+            );
+
+            ctx.rotate(player.jumping ? Math.PI / 4 : 0);
+
+            ctx.fillStyle = "#facc15";
+            ctx.fillRect(
+                -player.size / 2,
+                -player.size / 2,
+                player.size,
+                player.size
+            );
+
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+                -player.size / 2,
+                -player.size / 2,
+                player.size,
+                player.size
+            );
+
+            ctx.restore();
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = "#ef4444";
+
+            obstacles.forEach(obstacle => {
+                ctx.beginPath();
+                ctx.moveTo(obstacle.x, ground);
+                ctx.lineTo(
+                    obstacle.x + obstacle.width / 2,
+                    ground - obstacle.height
+                );
+                ctx.lineTo(
+                    obstacle.x + obstacle.width,
+                    ground
+                );
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+
+        function checkCollision(player, obstacle) {
+            const padding = 6;
+
+            return (
+                player.x + padding < obstacle.x + obstacle.width &&
+                player.x + player.size - padding > obstacle.x &&
+                player.y + player.size - padding > ground - obstacle.height
+            );
+        }
+
+        function endGame() {
+            running = false;
+            gameOver = true;
+
+            if (score > record) {
+                record = score;
+                localStorage.setItem("cubeDashRecord", record);
+                recordElement.textContent = record;
+                message.textContent = "NOVO RECORDE! 🏆 Clique para jogar novamente!";
+            } else {
+                message.textContent = "GAME OVER! Clique para tentar novamente.";
+            }
+        }
+
+        function gameLoop(timestamp) {
+            if (!running) return;
+
+            const delta = lastTime ? Math.min((timestamp - lastTime) / 16.67, 2) : 1;
+            lastTime = timestamp;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawGround();
+
+            // Física do jogador
+            player.velocityY += 0.65 * delta;
+            player.y += player.velocityY * delta;
+
+            if (player.y + player.size >= ground) {
+                player.y = ground - player.size;
+                player.velocityY = 0;
+                player.jumping = false;
+            }
+
+            // Criar obstáculos
+            spawnTimer += delta;
+
+            if (spawnTimer > 75 + Math.random() * 35) {
+                createObstacle();
+                spawnTimer = 0;
+            }
+
+            // Mover obstáculos
+            obstacles.forEach(obstacle => {
+                obstacle.x -= speed * delta;
+            });
+
+            obstacles = obstacles.filter(
+                obstacle => obstacle.x + obstacle.width > 0
+            );
+
+            // Pontuação e velocidade
+            score += 0.08 * delta;
+            scoreElement.textContent = Math.floor(score);
+
+            speed = 5 + score / 100;
+
+            // Verificar colisões
+            for (const obstacle of obstacles) {
+                if (checkCollision(player, obstacle)) {
+                    endGame();
+                    break;
+                }
+            }
+
+            drawObstacles();
+            drawPlayer();
+
+            if (running) {
+                animationId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        document.addEventListener("keydown", event => {
+            if (
+                event.code === "Space" ||
+                event.code === "ArrowUp"
+            ) {
+                event.preventDefault();
+                jump();
+            }
+        });
+
+        canvas.addEventListener("pointerdown", jump);
+
+        restartButton.addEventListener("click", resetGame);
+
+        // Desenho inicial
+        ctx.fillStyle = "#0b0e14";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#34d399";
+        ctx.fillRect(0, ground, canvas.width, 3);
+
+        ctx.fillStyle = "#facc15";
+        ctx.fillRect(85, ground - 30, 30, 30);
+
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "18px Segoe UI";
+        ctx.textAlign = "center";
+        ctx.fillText("CUBE DASH", 360, 65);
+    </script>
 
 </body>
 </html>
