@@ -2,586 +2,448 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>manduqwert - Streamer de GD</title>
-    <style>
-        /* Estilo Gamer Dark */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0e14;
-            color: #e2e8f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>manduqwert - Streamer de GD</title>
 
-        /* Menu de Navegação */
-        nav {
-            background-color: #151a26;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 100;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        nav a {
-            color: #34d399;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-        }
-        nav a:hover {
-            color: #059669;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        /* Container Principal */
-        .container {
-            max-width: 800px;
-            width: 90%;
-            margin: 40px 0;
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        /* Seções de Conteúdo */
-        section {
-            background-color: #151a26;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            margin-bottom: 40px;
-            border-left: 5px solid #34d399;
-        }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0b0e14;
+      color: #e5e7eb;
+      font-family: Arial, sans-serif;
+    }
 
-        h1 {
-            color: #34d399;
-            font-size: 2.5rem;
-            margin-top: 0;
-        }
+    header {
+      text-align: center;
+      padding: 25px;
+      background: #151a26;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
 
-        h2 {
-            color: #60a5fa;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 10px;
-        }
+    header h1 {
+      color: #34d399;
+      margin-bottom: 8px;
+    }
 
-        p {
-            line-height: 1.6;
-            font-size: 1.1rem;
-            color: #cbd5e1;
-        }
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
 
-        /* Estilo das listas de Viewers e Fases */
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            padding: 10px;
-            background-color: #1e293b;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            font-size: 1.05rem;
-        }
-        .destaque {
-            color: #f59e0b;
-            font-weight: bold;
-        }
-        .call {
-            color: #a78bfa;
-            font-style: italic;
-        }
+    nav a {
+      color: #34d399;
+      text-decoration: none;
+      background: #151a26;
+      padding: 12px 18px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
 
-        /* Cube Dash */
-        #gameCanvas {
-            display: block;
-            width: 100%;
-            max-width: 720px;
-            height: auto;
-            background: #0b0e14;
-            border: 2px solid #34d399;
-            border-radius: 8px;
-            margin: 20px auto;
-            cursor: pointer;
-            touch-action: manipulation;
-        }
+    nav a:hover {
+      background: #263244;
+    }
 
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            color: #34d399;
-            font-weight: bold;
-        }
+    section {
+      background: #151a26;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
 
-        .game-button {
-            display: block;
-            margin: 15px auto 0;
-            padding: 12px 25px;
-            background: #34d399;
-            color: #0b0e14;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+    h2 {
+      color: #60a5fa;
+    }
 
-        .game-button:hover {
-            background: #059669;
-        }
+    h3 {
+      color: #34d399;
+    }
 
-        /* Rodapé de Créditos */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-top: auto;
-            width: 100%;
-            background-color: #090d16;
-        }
-    </style>
+    li {
+      margin: 10px 0;
+    }
+
+    .music-player {
+      background: #0b0e14;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .game-container {
+      text-align: center;
+    }
+
+    canvas {
+      background: #080b12;
+      border: 2px solid #34d399;
+      border-radius: 8px;
+      max-width: 100%;
+    }
+
+    button {
+      background: #34d399;
+      color: #07120e;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 7px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    button:hover {
+      background: #6ee7b7;
+    }
+
+    footer {
+      text-align: center;
+      color: #9ca3af;
+      padding: 15px;
+    }
+  </style>
 </head>
+
 <body>
 
-    <!-- Menu para pular direto para as seções -->
-    <nav>
-        <a href="#principal">Principal</a>
-        <a href="#fases">Fases Difíceis</a>
-        <a href="#cubedash">Cube Dash</a>
-        <a href="#creditos">Agradecimentos</a>
-    </nav>
+  <header>
+    <h1>manduqwert</h1>
+    <p>Streamer de Geometry Dash</p>
+  </header>
 
-    <div class="container">
+  <nav>
+    <a href="#principal">Principal</a>
+    <a href="#mha">MHA</a>
+    <a href="#cubedash">Cube Dash</a>
+    <a href="#agradecimentos">Agradecimentos</a>
+  </nav>
 
-        <!-- 1 - PÁGINA PRINCIPAL -->
-        <section id="principal">
-            <h1>manduqwert 🚀</h1>
-            <p>Bem-vindo ao site oficial do manduqwert, streamer focado em Geometry Dash!</p>
-            
-            <h2>O que ele está fazendo agora?</h2>
-            <p>Atualmente ele está zerando challenges e demons.</p>
+  <section id="principal">
+    <h2>Principal</h2>
 
-            <h2>Comunidade & Chat</h2>
-            <p>Estes são os viewers lendários que mais marcam presença na live da Twitch:</p>
-            <ul>
-                <li>🔥 <span class="destaque">GDPlayer878</span></li>
-                <li>🔥 <span class="destaque">drangleleike</span></li>
-                <li>🔥 <span class="destaque">Santxnely</span></li>
-                <li>🔥 <span class="destaque">sxftcloud</span></li>
-                <li>🔥 <span class="destaque">lovely_gd</span></li>
-                <li>🔥 <span class="destaque">LyonUnaware</span></li>
-            </ul>
-            
-            <h2>Discord & Calls</h2>
-            <p class="call">"e tbm tem gente que faz call com ele no discord mas eu esqueci o nome das pessoas na twitch foi mal :P"</p>
-        </section>
+    <p>
+      Atualmente ele está zerando challenges e demons.
+    </p>
 
-        <!-- 2 - FASES MAIS DIFÍCEIS -->
-        <section id="fases">
-            <h2>🏆 Conquistas no Geometry Dash</h2>
-            <p>O homem tem dedos de aço. Dá uma olhada nas maiores vitórias dele até agora:</p>
-            <ul>
-                <li>🔴 <strong>Hardest:</strong> Acu (Extreme Demon) - Zerado com sucesso!</li>
-                <li>⚫ <strong>Outras conquistas:</strong> The Badland (Insane Demon)</li>
-            </ul>
-        </section>
+    <h3>Viewers</h3>
+    <ul>
+      <li>GDPlayer878</li>
+      <li>drangleleike</li>
+      <li>Santxnely</li>
+      <li>sxftcloud</li>
+      <li>lovely_gd</li>
+      <li>LyonUnaware</li>
+    </ul>
 
-        <!-- 3 - CUBE DASH -->
-        <section id="cubedash">
-            <h2>🎮 Cube Dash</h2>
-            <p>Um pequeno desafio inspirado em Geometry Dash! Pule os espinhos e tente conseguir a maior pontuação possível.</p>
+    <div class="music-player">
+      <h3>🎵 Música do site: Nuke Powder</h3>
+      <p>Trilha sonora oficial do site!</p>
 
-            <div class="game-info">
-                <span>Pontos: <span id="score">0</span></span>
-                <span>Recorde: <span id="record">0</span></span>
-            </div>
-
-            <canvas id="gameCanvas" width="720" height="220"></canvas>
-
-            <p id="gameMessage" style="text-align:center;">
-                Clique no jogo ou aperte ESPAÇO para começar!
-            </p>
-
-            <button class="game-button" id="restartButton">
-                Jogar / Recomeçar
-            </button>
-        </section>
-
-        <!-- 4 - AGRADECIMENTOS E CRÉDITOS -->
-        <section id="creditos">
-            <h2>❤️ Um Obrigado Especial</h2>
-            <p>Um grande agradecimento ao <strong>manduqwert</strong> por proporcionar lives incríveis, momentos insanos de gameplay, criação de fases e por unir essa comunidade foda do GD.</p>
-        </section>
-
+      <audio controls loop>
+        <source src="NukePowder.mp3" type="audio/mpeg">
+        Seu navegador não suporta áudio.
+      </audio>
     </div>
+  </section>
 
-    <!-- RODAPÉ COM OS SEUS CRÉDITOS -->
-    <footer>
-        Desenvolvido com orgulho por <span style="color: #34d399; font-weight: bold;">GDPlayer878 / Friendzinn</span> © 2026
-    </footer>
+  <section id="mha">
+    <h2>MHA — Mandu's Hardest Achievements</h2>
 
-    <script>
-      
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+    <p>As maiores conquistas do manduqwert, organizadas da mais difícil para a mais fácil:</p>
 
-const scoreElement = document.getElementById("score");
-const recordElement = document.getElementById("record");
-const message = document.getElementById("gameMessage");
-const restartButton = document.getElementById("restartButton");
+    <ol>
+      <li>🥇 <strong>TOP 1 — Acu:</strong> 100%</li>
+      <li>🥈 <strong>TOP 2 — The Badland:</strong> 100%</li>
+      <li>🥉 <strong>TOP 3 — Bit Reaper</strong></li>
+      <li>🏅 <strong>TOP 4 — Draft Dinamix</strong></li>
+    </ol>
+  </section>
 
-const ground = 185;
+  <section id="cubedash">
+    <h2>Cube Dash</h2>
 
-let player;
-let obstacles;
-let score;
-let speed;
-let running = false;
-let gameOver = false;
-let animationId;
-let lastTime = 0;
-let spawnTimer = 0;
-let record = Number(localStorage.getItem("cubeDashRecord")) || 0;
+    <p>
+      Pule os espinhos e tente conseguir a maior pontuação!
+    </p>
 
-recordElement.textContent = record;
+    <div class="game-container">
+      <canvas id="game" width="720" height="220"></canvas>
 
-function resetGame() {
-    cancelAnimationFrame(animationId);
+      <p>Pontuação: <span id="score">0</span></p>
+      <p>Recorde: <span id="best">0</span></p>
 
-    player = {
-        x: 85,
+      <p>
+        Espaço, seta para cima ou clique para pular.
+        Use o mesmo comando perto de um orb para ativá-lo.
+      </p>
+
+      <button onclick="restartGame()">Reiniciar</button>
+    </div>
+  </section>
+
+  <section id="agradecimentos">
+    <h2>Agradecimentos</h2>
+
+    <p>
+      Obrigado a todos que acompanham a comunidade e ajudam o projeto!
+    </p>
+  </section>
+
+  <footer>
+    Developed by GDPlayer878 / Friendzinn © 2026
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    const scoreText = document.getElementById("score");
+    const bestText = document.getElementById("best");
+
+    const ground = 190;
+
+    let cube;
+    let obstacles;
+    let score;
+    let best = Number(localStorage.getItem("cubeDashBest")) || 0;
+    let speed;
+    let frame;
+    let gameOver;
+    let started;
+
+    bestText.textContent = best;
+
+    function resetGame() {
+      cube = {
+        x: 70,
         y: ground - 30,
         size: 30,
-        velocityY: 0,
-        jumping: false
-    };
+        vy: 0,
+        grounded: true
+      };
 
-    obstacles = [];
-    score = 0;
-    speed = 5;
-    spawnTimer = 0;
-    running = true;
-    gameOver = false;
-    lastTime = 0;
+      obstacles = [];
+      score = 0;
+      speed = 5;
+      frame = 0;
+      gameOver = false;
+      started = true;
 
-    scoreElement.textContent = "0";
-    message.textContent = "Boa sorte! :D";
+      scoreText.textContent = score;
+    }
 
-    animationId = requestAnimationFrame(gameLoop);
-}
+    function createObstacle() {
+      const count = Math.floor(Math.random() * 4) + 1;
 
-function jump() {
-    if (!running) {
-        resetGame();
+      const obstacle = {
+        x: canvas.width + 20,
+        spikes: count,
+        special: null,
+        specialUsed: false
+      };
+
+      if (count === 4) {
+        obstacle.special = Math.random() < 0.5 ? "pad" : "orb";
+      } else if (Math.random() < 0.25) {
+        obstacle.special = Math.random() < 0.5 ? "pad" : "orb";
+      }
+
+      obstacles.push(obstacle);
+    }
+
+    function jump() {
+      if (gameOver) {
+        restartGame();
         return;
-    }
+      }
 
-    // Ativar orb quando estiver próximo
-    for (const obstacle of obstacles) {
-        if (
-            obstacle.special === "orb" &&
-            !obstacle.used &&
-            Math.abs(obstacle.specialX - (player.x + player.size / 2)) < 45 &&
-            Math.abs(obstacle.specialY - (player.y + player.size / 2)) < 65
-        ) {
-            player.velocityY = -16;
-            player.jumping = true;
-            obstacle.used = true;
-            return;
-        }
-    }
+      if (!started) {
+        resetGame();
+      }
 
-    // Pulo normal
-    if (!player.jumping) {
-        player.velocityY = -12;
-        player.jumping = true;
-    }
-}
+      if (cube.grounded) {
+        cube.vy = -12;
+        cube.grounded = false;
+        return;
+      }
 
-function createObstacle() {
-    const count = Math.floor(Math.random() * 4) + 1;
-
-    let special = null;
-
-    // Quatro espinhos sempre precisam de ajuda!
-    if (count === 4) {
-        special = Math.random() < 0.5 ? "pad" : "orb";
-    } else if (Math.random() < 0.25) {
-        special = Math.random() < 0.5 ? "pad" : "orb";
-    }
-
-    const obstacle = {
-        x: canvas.width,
-        count: count,
-        width: count * 22,
-        height: 32,
-        special: special,
-        used: false,
-        activated: false
-    };
-
-    if (special === "pad") {
-        obstacle.specialX = obstacle.x - 55;
-        obstacle.specialY = ground - 8;
-    }
-
-    if (special === "orb") {
-        obstacle.specialX = obstacle.x - 55;
-        obstacle.specialY = ground - 78;
-    }
-
-    obstacles.push(obstacle);
-}
-
-function drawGround() {
-    ctx.fillStyle = "#34d399";
-    ctx.fillRect(0, ground, canvas.width, 3);
-
-    ctx.strokeStyle = "#1e293b";
-    ctx.lineWidth = 1;
-
-    for (let x = 0; x < canvas.width; x += 30) {
-        ctx.beginPath();
-        ctx.moveTo(x, ground + 3);
-        ctx.lineTo(x - 15, canvas.height);
-        ctx.stroke();
-    }
-}
-
-function drawPlayer() {
-    ctx.save();
-
-    ctx.translate(
-        player.x + player.size / 2,
-        player.y + player.size / 2
-    );
-
-    ctx.rotate(player.jumping ? Math.PI / 4 : 0);
-
-    ctx.fillStyle = "#facc15";
-    ctx.fillRect(
-        -player.size / 2,
-        -player.size / 2,
-        player.size,
-        player.size
-    );
-
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-
-    ctx.strokeRect(
-        -player.size / 2,
-        -player.size / 2,
-        player.size,
-        player.size
-    );
-
-    ctx.restore();
-}
-
-function drawObstacles() {
-    obstacles.forEach(obstacle => {
-        // Espinhos
-        ctx.fillStyle = "#ef4444";
-
-        for (let i = 0; i < obstacle.count; i++) {
-            const x = obstacle.x + i * 22;
-
-            ctx.beginPath();
-            ctx.moveTo(x, ground);
-            ctx.lineTo(x + 11, ground - obstacle.height);
-            ctx.lineTo(x + 22, ground);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        // Pad amarelo
-        if (obstacle.special === "pad" && !obstacle.used) {
-            ctx.fillStyle = "#facc15";
-            ctx.fillRect(obstacle.specialX, ground - 9, 22, 9);
-
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(obstacle.specialX + 7, ground - 12, 8, 3);
-        }
-
-        // Orb azul
-        if (obstacle.special === "orb" && !obstacle.used) {
-            ctx.beginPath();
-            ctx.arc(
-                obstacle.specialX,
-                obstacle.specialY,
-                12,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fillStyle = "#38bdf8";
-            ctx.fill();
-
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-    });
-}
-
-function checkCollision(player, obstacle) {
-    const padding = 6;
-
-    for (let i = 0; i < obstacle.count; i++) {
-        const spikeX = obstacle.x + i * 22;
+      for (const obstacle of obstacles) {
+        const orbX = obstacle.x + obstacle.spikes * 24 + 10;
 
         if (
-            player.x + player.size - padding > spikeX + 3 &&
-            player.x + padding < spikeX + 19 &&
-            player.y + player.size - padding > ground - obstacle.height
+          obstacle.special === "orb" &&
+          !obstacle.specialUsed &&
+          Math.abs(orbX - cube.x) < 65 &&
+          cube.y > ground - 115
         ) {
-            return true;
+          cube.vy = -13;
+          obstacle.specialUsed = true;
+          break;
         }
+      }
     }
 
-    return false;
-}
-
-function endGame() {
-    running = false;
-    gameOver = true;
-
-    if (score > record) {
-        record = score;
-        localStorage.setItem("cubeDashRecord", record);
-        recordElement.textContent = record;
-
-        message.textContent = "NOVO RECORDE! 🏆 Clique para jogar novamente!";
-    } else {
-        message.textContent = "GAME OVER! Clique para tentar novamente.";
-    }
-}
-
-function gameLoop(timestamp) {
-    if (!running) return;
-
-    const delta = lastTime
-        ? Math.min((timestamp - lastTime) / 16.67, 2)
-        : 1;
-
-    lastTime = timestamp;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    drawGround();
-
-    // Física
-    player.velocityY += 0.65 * delta;
-    player.y += player.velocityY * delta;
-
-    if (player.y + player.size >= ground) {
-        player.y = ground - player.size;
-        player.velocityY = 0;
-        player.jumping = false;
+    function restartGame() {
+      resetGame();
     }
 
-    // Criar obstáculos aleatórios
-    spawnTimer += delta;
-
-    if (spawnTimer > 65 + Math.random() * 55) {
-        createObstacle();
-        spawnTimer = 0;
-    }
-
-    // Mover obstáculos e especiais
-    obstacles.forEach(obstacle => {
-        obstacle.x -= speed * delta;
-
-        if (obstacle.special) {
-            obstacle.specialX -= speed * delta;
-        }
-
-        // Ativar pad automaticamente
-        if (
-            obstacle.special === "pad" &&
-            !obstacle.used &&
-            player.x + player.size > obstacle.specialX &&
-            player.x < obstacle.specialX + 22 &&
-            !player.jumping
-        ) {
-            player.velocityY = -17;
-            player.jumping = true;
-            obstacle.used = true;
-        }
-    });
-
-    obstacles = obstacles.filter(
-        obstacle => obstacle.x + obstacle.width > 0
-    );
-
-    // Pontuação
-    score += 0.08 * delta;
-    scoreElement.textContent = Math.floor(score);
-
-    speed = 5 + score / 100;
-
-    // Colisões
-    for (const obstacle of obstacles) {
-        if (checkCollision(player, obstacle)) {
-            endGame();
-            break;
-        }
-    }
-
-    drawObstacles();
-    drawPlayer();
-
-    if (running) {
-        animationId = requestAnimationFrame(gameLoop);
-    }
-}
-
-document.addEventListener("keydown", event => {
-    if (
-        event.code === "Space" ||
-        event.code === "ArrowUp"
-    ) {
+    document.addEventListener("keydown", (event) => {
+      if (event.code === "Space" || event.code === "ArrowUp") {
         event.preventDefault();
+        jump();
+      }
+    });
 
-        if (!event.repeat) {
-            jump();
+    canvas.addEventListener("pointerdown", jump);
+
+    function update() {
+      if (!started || gameOver) return;
+
+      frame++;
+
+      cube.vy += 0.65;
+      cube.y += cube.vy;
+
+      if (cube.y >= ground - cube.size) {
+        cube.y = ground - cube.size;
+        cube.vy = 0;
+        cube.grounded = true;
+      }
+
+      if (frame % 95 === 0) {
+        createObstacle();
+      }
+
+      for (const obstacle of obstacles) {
+        obstacle.x -= speed;
+
+        if (
+          obstacle.special === "pad" &&
+          !obstacle.specialUsed &&
+          cube.grounded &&
+          Math.abs(obstacle.x - cube.x) < 38
+        ) {
+          cube.vy = -16;
+          cube.grounded = false;
+          obstacle.specialUsed = true;
         }
+
+        for (let i = 0; i < obstacle.spikes; i++) {
+          const spikeX = obstacle.x + i * 24;
+
+          if (
+            cube.x + cube.size - 5 > spikeX &&
+            cube.x + 5 < spikeX + 20 &&
+            cube.y + cube.size - 5 > ground - 25
+          ) {
+            gameOver = true;
+          }
+        }
+
+        if (!obstacle.counted && obstacle.x + obstacle.spikes * 24 < cube.x) {
+          obstacle.counted = true;
+          score++;
+          scoreText.textContent = score;
+
+          if (score > best) {
+            best = score;
+            localStorage.setItem("cubeDashBest", best);
+            bestText.textContent = best;
+          }
+
+          speed = Math.min(9, speed + 0.08);
+        }
+      }
+
+      obstacles = obstacles.filter(o => o.x > -150);
     }
-});
 
-canvas.addEventListener("pointerdown", jump);
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-restartButton.addEventListener("click", resetGame);
+      ctx.fillStyle = "#34d399";
+      ctx.fillRect(0, ground, canvas.width, 3);
 
-// Tela inicial
-ctx.fillStyle = "#0b0e14";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Cube
+      ctx.fillStyle = "#facc15";
+      ctx.fillRect(cube.x, cube.y, cube.size, cube.size);
 
-ctx.fillStyle = "#34d399";
-ctx.fillRect(0, ground, canvas.width, 3);
+      // Olhos do cubo
+      ctx.fillStyle = "#111827";
+      ctx.fillRect(cube.x + 7, cube.y + 8, 5, 5);
+      ctx.fillRect(cube.x + 19, cube.y + 8, 5, 5);
 
-ctx.fillStyle = "#facc15";
-ctx.fillRect(85, ground - 30, 30, 30);
+      // Obstáculos
+      for (const obstacle of obstacles) {
+        for (let i = 0; i < obstacle.spikes; i++) {
+          const x = obstacle.x + i * 24;
 
-ctx.fillStyle = "#e2e8f0";
-ctx.font = "18px Segoe UI";
-ctx.textAlign = "center";
-ctx.fillText("CUBE DASH", 360, 65);
-    </script>
+          ctx.fillStyle = "#ef4444";
+          ctx.beginPath();
+          ctx.moveTo(x, ground);
+          ctx.lineTo(x + 12, ground - 25);
+          ctx.lineTo(x + 24, ground);
+          ctx.fill();
+        }
+
+        if (obstacle.special === "pad") {
+          ctx.fillStyle = "#facc15";
+          ctx.fillRect(obstacle.x + obstacle.spikes * 24, ground - 7, 24, 7);
+        }
+
+        if (obstacle.special === "orb" && !obstacle.specialUsed) {
+          ctx.beginPath();
+          ctx.fillStyle = "#38bdf8";
+          ctx.arc(obstacle.x + obstacle.spikes * 24 + 10, ground - 75, 10, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      if (!started) {
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.fillText("Clique ou aperte ESPAÇO para começar!", 155, 100);
+      }
+
+      if (gameOver) {
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.fillText("GAME OVER", 275, 90);
+
+        ctx.font = "16px Arial";
+        ctx.fillText("Clique ou aperte ESPAÇO para reiniciar", 210, 120);
+      }
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    started = false;
+    resetGame();
+    started = false;
+    loop();
+  </script>
 
 </body>
 </html>
